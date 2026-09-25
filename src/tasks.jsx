@@ -1,4 +1,4 @@
-import { useState } from "react"
+import { useState, useEffect} from "react"
 
 export default function TodoApp(){
 
@@ -29,9 +29,8 @@ const newTask = {
 
 setTask((prev)=>[...prev,newTask]);
 setInput("");
-setDeadline
+setDeadline("");
 };
-
 
 const toggleTask =(id)=>{
     setTask((prev)=>
@@ -44,6 +43,7 @@ const deleteTask =(id)=>{
 };
 
 
+useEffect(()=>{localStorage.setItem("task", JSON.stringify(task))},[])
 
 return(
  <>
