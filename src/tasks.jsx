@@ -1,5 +1,5 @@
 import { useState, useEffect} from "react"
-
+import './tasks.css';
 export default function TodoApp(){
 
 const [task, setTask] =useState([
@@ -42,8 +42,28 @@ const deleteTask =(id)=>{
         setTask((prev)=> prev.filter((t)=> t.id !==id));
 };
 
+const todayIso = (ofsetDays = 0)=>{
+    const today = new Date()
+    today.setDate(today.getDate()+ ofsetDays)
 
-useEffect(()=>{localStorage.setItem("task", JSON.stringify(task))},[])
+    let year = String(today.getFullYear()).padStart(4,"0")
+    let month = String(today.getMonth() + 1).padStart(2,"0")
+    let day = String(today.getDate()).padStart(2,"0")
+    return(`${year}-${month}-${day}`)
+    
+}
+
+const deadlineWithColor = (deadline,done)=>{
+    if(!deadline){return null}
+    let deadlineColor = null
+    if(done === true){return null}
+    if(deadline < todayIso()){deadlineColor = "color_red"}
+    if(deadline === todayIso() || deadline === todayIso(1)){deadlineColor = "color_yellow"}
+    return(deadlineColor)
+};
+
+
+useEffect(()=>{localStorage.setItem("task", JSON.stringify(task))})
 
 return(
  <>
@@ -73,7 +93,7 @@ return(
                 onChange={()=> toggleTask(t.id)}
                 />
                 {t.title}
-                {t.deadline && <span>Дедлайн: {t.deadline}</span>}
+                {t.deadline && (<span className={deadlineWithColor(t.deadline,t.done)}>Дедлайн:{t.deadline}</span>)}
                 <button onClick={()=> deleteTask(t.id)}>Удалить</button>
             </li>
         ))}
